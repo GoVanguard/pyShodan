@@ -3,6 +3,7 @@ import sys
 import argparse
 import csv
 import time
+import datetime
 
 def getApiKey(k):
     SHODAN_API_KEY = k
@@ -25,14 +26,15 @@ def searchTerm(s):
         print('')
         hostinfo.append([result['ip_str'].replace(","," "), result['data'].replace(","," ").encode("utf-8"),result['port']])
 
-    with open("shodanOutput-searchTerm.csv","w") as csvfile:
+    title = "shodanOutput-" + searchStr + ".csv"
+    with open(title,"w") as csvfile:
         header = ["Host IP", "Banner","Ports"]
         writer = csv.writer(csvfile, delimiter=",")
         writer.writerow(header)
         for i in range(len(hostinfo)):
             writer.writerow(hostinfo[i])
 
-    print("shodanOutput-searchTerm.csv created in script directory")
+    print(title + " created in script directory")
 
 def searchIp(d):
     searchHost = d
@@ -54,15 +56,15 @@ def searchIp(d):
                 Port: %s
                 Banner: %s
                 """ % (item['port'], item['data']))
-
-        with open("shodanOutput-ipAddress.csv","w") as csvfile:
+        title = "shodanOutput-" + searchHost + ".csv"
+        with open(title,"w") as csvfile:
             header = ["Host IP", "FQDN", "Banner", "Ports"]
             writer = csv.writer(csvfile, delimiter=",")
             writer.writerow(header)
             for i in range(len(hostinfo)):
                 writer.writerow(hostinfo[i])
 
-        print("shodanOutput-ipAddress.csv created in script directory")
+        print(title + " created in script directory")
     except shodan.APIError as e:
         print("Error: %s" % e)
 
@@ -70,7 +72,7 @@ def searchList(f):
     api = getApiKey(args.apiKey)
     hostinfo = []
     
-    with open(f,'rb') as dafile:
+    with open(f,'r') as dafile:
         x = dafile.read().splitlines()
 
     for i in range(len(x)):
@@ -83,15 +85,19 @@ def searchList(f):
             print("Error: %s" % e)
             if "no information available" in str(e).lower():
                 print("No information is available for %s" % str(x[i]))
-    
-    with open("shodanOutput-ipList.csv","w") as csvfile:
+
+    for i in range(len(hostinfo)):
+        print("\n" + str(hostinfo[i]) + "\n")
+
+    title = "shodanOutput-ipList-" + str(datetime.datetime.now()) + ".csv"
+    with open(title,"w") as csvfile:
         header = ["Host IP", "FQDN", "Banner", "Ports"]
         writer = csv.writer(csvfile, delimiter=",")
         writer.writerow(header)
         for i in range(len(hostinfo)):
             writer.writerow(hostinfo[i])
     
-    print("shodanOutput-ipList.csv created in script directory")
+    print(title + " created in script directory")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Python script for interacting with Shodan API")
