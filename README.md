@@ -22,6 +22,3 @@ Short Form        | Long Form      | Description
 -api              | --api          | Shodan API key (required)
 
 Output is printed to stdout as well as CSV files in the script directory.
-
-## License
-This script is licensed under the GNU Affero General Public License v3.0.
