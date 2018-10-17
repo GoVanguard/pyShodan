@@ -7,7 +7,7 @@ git clone https://github.com/GoVanguard/pyShodan.git
 ```
 
 ## Recommended Python Version
-Supports Python 3.5+.
+Tested on Python 3.5+.
 
 ## Dependencies
 * Shodan (pip3 install shodan)
