@@ -25,10 +25,12 @@ import csv
 import time
 import datetime
 
+#Return API key
 def getApiKey(k):
     api = k
     return api
 
+#Search Shodan for string query
 def searchTerm(s):
     searchStr = s
     api = getApiKey(args.apiKey)
@@ -45,6 +47,7 @@ def searchTerm(s):
 
     print(title + " created in script directory")
 
+#Search Shodan for specific IP address
 def searchIp(d):
     searchHost = d
     api = getApiKey(args.apiKey)
@@ -64,6 +67,7 @@ def searchIp(d):
     except shodan.APIError as e:
         print("Error: %s" % e)
 
+#Search Shodan for list of IP addresses
 def searchList(f):
     api = getApiKey(args.apiKey)
     hostinfo = ps.searchList(f)
