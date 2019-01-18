@@ -1,4 +1,24 @@
-import shodan
+#####################################################################################
+#                  pyShodan: Python API Wrapper for Shodan                          #
+#                       Copyright (c) 2019 GoVanguard                               #
+#####################################################################################
+# This file is part of pyShodan.                                                    #
+#                                                                                   #
+#     pyShodan is free software: you can redistribute it and/or modify              #
+#     it under the terms of the GNU Lesser General Public License as published by   #
+#     the Free Software Foundation, either version 3 of the License, or             #
+#     (at your option) any later version.                                           #
+#                                                                                   #
+#     pyShodan is distributed in the hope that it will be useful,                   #
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of                #
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 #
+#     GNU Lesser General Public License for more details.                           #
+#                                                                                   #
+#     You should have received a copy of the GNU Lesser General Public License      #
+#     along with pyShodan.  If not, see <http://www.gnu.org/licenses/>.             #
+#####################################################################################
+
+from pyShodan import pyShodan
 import sys
 import argparse
 import csv
@@ -6,25 +26,14 @@ import time
 import datetime
 
 def getApiKey(k):
-    SHODAN_API_KEY = k
-    api = shodan.Shodan(SHODAN_API_KEY)
+    api = k
     return api
 
 def searchTerm(s):
     searchStr = s
     api = getApiKey(args.apiKey)
-    hostinfo = []
-    # Wrap the request in a try/ except block to catch errors
-    # Search Shodan
-    results = api.search(searchStr)
-
-    # Show the results
-    print('Results found: %s' % results['total'])
-    for result in results['matches']:
-        print('IP: %s' % result['ip_str'])
-        print(result['data'])
-        print('')
-        hostinfo.append([result['ip_str'].replace(","," "), result['data'].replace(","," ").encode("utf-8"),result['port']])
+    ps = pyShodan(api, False)
+    hostinfo = ps.searchTerm(searchStr)
 
     title = "shodanOutput-" + searchStr + ".csv"
     with open(title,"w") as csvfile:
@@ -39,23 +48,10 @@ def searchTerm(s):
 def searchIp(d):
     searchHost = d
     api = getApiKey(args.apiKey)
+    ps = pyShodan(api, False)
     try:
-        host = api.host(searchHost)
-        # Print general info
-        print("""
-            IP: %s
-            Organization: %s
-            Operating System: %s
-            """ % (host['ip_str'], host.get('org', 'n/a'), host.get('os', 'n/a')))
+        hostinfo = ps.searchIp(searchHost)
 
-        hostinfo = []
-
-        for item in host['data']:
-            hostinfo.append([item['ip_str'], item['org'], str(item['data'].replace(',',' ').strip('\t\n\r')), item['port']])
-            print("""
-                Port: %s
-                Banner: %s
-                """ % (item['port'], item['data']))
         title = "shodanOutput-" + searchHost + ".csv"
         with open(title,"w") as csvfile:
             header = ["Host IP", "FQDN", "Banner", "Ports"]
@@ -70,24 +66,9 @@ def searchIp(d):
 
 def searchList(f):
     api = getApiKey(args.apiKey)
-    hostinfo = []
-    
+    hostinfo = ps.searchList(f)
     with open(f,'r') as dafile:
         x = dafile.read().splitlines()
-
-    for i in range(len(x)):
-        try:
-            time.sleep(2)
-            host = api.host(x[i])
-            for item in host['data']:
-                hostinfo.append([item['ip_str'], item['org'], str(item['data']).replace(',',' ').strip('\r\n\t'), item['port']])
-        except shodan.APIError as e:
-            print("Error: %s" % e)
-            if "no information available" in str(e).lower():
-                print("No information is available for %s" % str(x[i]))
-
-    for i in range(len(hostinfo)):
-        print("\n" + str(hostinfo[i]) + "\n")
 
     title = "shodanOutput-ipList-" + str(datetime.datetime.now()) + ".csv"
     with open(title,"w") as csvfile:
@@ -100,7 +81,7 @@ def searchList(f):
     print(title + " created in script directory")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Python script for interacting with Shodan API")
+    parser = argparse.ArgumentParser(description="pyShodan test script")
 
     parser.add_argument("--search", "-s", action="store", type=str, dest="searchVal", help="Search Shodan for a general term")
     parser.add_argument("--ipaddr", "-ip", action="store", type=str, dest="ipSearch", help="Search Shodan for a specific IP address")
