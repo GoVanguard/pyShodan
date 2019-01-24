@@ -31,7 +31,6 @@ class pyShodan:
     def debug(self, val: bool):
         self.__debug = val
 
-    #Search Shodan using a string query
     def searchTerm(self, searchStr: str):
         api = self.__api
         hostinfo = []
@@ -46,12 +45,11 @@ class pyShodan:
 
         return hostinfo
 
-    #Search Shodan for an IP address
     def searchIp(self, searchHost: str):
         api = self.__api
+        hostinfo = []
         try:
             host = api.host(searchHost)
-            hostinfo = []
 
             for item in host['data']:
                 hostinfo.append([item['ip_str'], item['org'], str(item['data'].replace(',',' ').strip('\t\n\r')), item['port']])
@@ -61,7 +59,6 @@ class pyShodan:
 
         return hostinfo
 
-    #Search Shodan for a list of IP addresses
     def searchList(self, f: str):
         api = self.__api
         hostinfo = []
