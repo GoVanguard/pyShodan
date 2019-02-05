@@ -29,21 +29,22 @@ def getApiKey(k):
     api = k
     return api
 
+def writeFile(t, h):
+    with open(t,"w") as csvfile:
+        header = ["Host IP", "FQDN", "Banner", "Ports"]
+        writer = csv.writer(csvfile, delimiter=",")
+        writer.writerow(header)
+        for i in range(len(h)):
+            writer.writerow(h[i])
+    print(t + " created in script directory")
+
 def searchTerm(s):
     searchStr = s
     api = getApiKey(args.apiKey)
     ps = pyShodan(api, False)
     hostinfo = ps.searchTerm(searchStr)
-
     title = "shodanOutput-" + searchStr + ".csv"
-    with open(title,"w") as csvfile:
-        header = ["Host IP", "Banner","Ports"]
-        writer = csv.writer(csvfile, delimiter=",")
-        writer.writerow(header)
-        for i in range(len(hostinfo)):
-            writer.writerow(hostinfo[i])
-
-    print(title + " created in script directory")
+    writeFile(title, hostinfo)
 
 def searchIp(d):
     searchHost = d
@@ -51,34 +52,18 @@ def searchIp(d):
     ps = pyShodan(api, False)
     try:
         hostinfo = ps.searchIp(searchHost)
-
         title = "shodanOutput-" + searchHost + ".csv"
-        with open(title,"w") as csvfile:
-            header = ["Host IP", "FQDN", "Banner", "Ports"]
-            writer = csv.writer(csvfile, delimiter=",")
-            writer.writerow(header)
-            for i in range(len(hostinfo)):
-                writer.writerow(hostinfo[i])
-
-        print(title + " created in script directory")
+        writeFile(title, hostinfo)
     except shodan.APIError as e:
         print("Error: %s" % e)
 
 def searchList(f):
     api = getApiKey(args.apiKey)
     ps = pyShodan(api, False)
-    hostinfo = ps.searchList(f)
     d = datetime.datetime.today()
-
+    hostinfo = ps.searchList(f)
     title = "shodanOutput-ipList_" + d.strftime("%d-%m-%Y_%H-%M-%S") + ".csv"
-    with open(title,"w") as csvfile:
-        header = ["Host IP", "FQDN", "Banner", "Ports"]
-        writer = csv.writer(csvfile, delimiter=",")
-        writer.writerow(header)
-        for i in range(len(hostinfo)):
-            writer.writerow(hostinfo[i])
-    
-    print(title + " created in script directory")
+    writeFile(title, hostinfo)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="pyShodan test script")
