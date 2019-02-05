@@ -20,6 +20,7 @@
 
 import shodan
 import sys
+import time
 
 class pyShodan:
 
@@ -65,12 +66,8 @@ class pyShodan:
         api = self.__api
         hostinfo = []
 
-        # Open the file containing a list of IP addresses
-        with open(f,'r') as dafile:
-            x = dafile.read().splitlines()
-
         # Iterate through lines in the file
-        for i in range(len(x)):
+        for i in range(len(f.read().splitlines())):
             try:
                 time.sleep(2)
                 host = api.host(x[i]) # Search Shodan for the host on the current line in the file

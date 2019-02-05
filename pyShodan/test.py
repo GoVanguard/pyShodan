@@ -66,11 +66,11 @@ def searchIp(d):
 
 def searchList(f):
     api = getApiKey(args.apiKey)
+    ps = pyShodan(api, False)
     hostinfo = ps.searchList(f)
-    with open(f,'r') as dafile:
-        x = dafile.read().splitlines()
+    d = datetime.datetime.today()
 
-    title = "shodanOutput-ipList-" + str(datetime.datetime.now()) + ".csv"
+    title = "shodanOutput-ipList_" + d.strftime("%d-%m-%Y_%H-%M-%S") + ".csv"
     with open(title,"w") as csvfile:
         header = ["Host IP", "FQDN", "Banner", "Ports"]
         writer = csv.writer(csvfile, delimiter=",")
