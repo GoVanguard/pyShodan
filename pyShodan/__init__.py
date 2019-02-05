@@ -34,25 +34,27 @@ class pyShodan:
     def searchTerm(self, searchStr: str):
         api = self.__api
         hostinfo = []
-        # Wrap the request in a try/ except block to catch errors
-        # Search Shodan
+
+        # Search Shodan for this term
         results = api.search(searchStr)
 
         # Format the results into list
         print('Results found: %s' % results['total'])
         for result in results['matches']:
-            hostinfo.append([result['ip_str'].replace(","," "), result['data'].replace(","," ").encode("utf-8"),result['port']])
+            hostinfo.append([result['ip_str'].replace(","," "), result['data'].replace(","," ").encode("utf-8"),result['port']]) # Store the results in a list
 
         return hostinfo
 
     def searchIp(self, searchHost: str):
         api = self.__api
         hostinfo = []
+
+        # Search Shodan for this IP address
         try:
             host = api.host(searchHost)
 
             for item in host['data']:
-                hostinfo.append([item['ip_str'], item['org'], str(item['data'].replace(',',' ').strip('\t\n\r')), item['port']])
+                hostinfo.append([item['ip_str'], item['org'], str(item['data'].replace(',',' ').strip('\t\n\r')), item['port']]) # Store the results in a list
 
         except shodan.APIError as e:
             print("Error: %s" % e)
@@ -62,16 +64,18 @@ class pyShodan:
     def searchList(self, f: str):
         api = self.__api
         hostinfo = []
-    
+
+        # Open the file containing a list of IP addresses
         with open(f,'r') as dafile:
             x = dafile.read().splitlines()
 
+        # Iterate through lines in the file
         for i in range(len(x)):
             try:
                 time.sleep(2)
-                host = api.host(x[i])
+                host = api.host(x[i]) # Search Shodan for the host on the current line in the file
                 for item in host['data']:
-                    hostinfo.append([item['ip_str'], item['org'], str(item['data']).replace(',',' ').strip('\r\n\t'), item['port']])
+                    hostinfo.append([item['ip_str'], item['org'], str(item['data']).replace(',',' ').strip('\r\n\t'), item['port']]) # Store the results in a list
             except shodan.APIError as e:
                 print("Error: %s" % e)
                 if "no information available" in str(e).lower():
