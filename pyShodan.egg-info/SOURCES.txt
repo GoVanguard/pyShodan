@@ -1,0 +1,8 @@
+README.md
+setup.py
+pyShodan/__init__.py
+pyShodan/test.py
+pyShodan.egg-info/PKG-INFO
+pyShodan.egg-info/SOURCES.txt
+pyShodan.egg-info/dependency_links.txt
+pyShodan.egg-info/top_level.txt
