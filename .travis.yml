@@ -10,4 +10,4 @@ install:
   - pip install -r requirements.txt
 
 script:
-  - python ./pyShodan/test.py
+  - python ./pyShodan/__init__.py
