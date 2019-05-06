@@ -21,6 +21,7 @@
 import shodan
 import sys
 import time
+from IPy import IP
 
 class PyShodan:
 
@@ -62,6 +63,11 @@ class PyShodan:
 
         if not searchHost:
             return 'No search input'
+
+        searchHostIpType = IP(searchHost).iptype()
+
+        if searchHostIpType != "PUBLIC":
+            return "Warning, {0} isn't public.. Shodan only tracks public IPs".format(searchHost)
 
         hostinfo = []
 
