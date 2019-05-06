@@ -22,22 +22,32 @@ import shodan
 import sys
 import time
 
-class pyShodan:
+class PyShodan:
 
     #Constructor
-    def __init__(self, apiToken: str, debug=False):
-        self.__api = shodan.Shodan(apiToken)
-        self.__debug = debug
+    def __init__(self):
+        self.apiKey = None
+        self.debug = False
+        self.shodanSession = None
 
-    def debug(self, val: bool):
-        self.__debug = val
+    def createSession(self):
+        if self.apiKey:
+            self.shodanSession = shodan.Shodan(self.apiKey)
+            return
+        else:
+            return 'Set API Key'
 
     def searchTerm(self, searchStr: str):
-        api = self.__api
+        if not self.shodanSession:
+            return 'Set API Key'
+
+        if not searchHost:
+            return 'No search input'
+
         hostinfo = []
 
         # Search Shodan for this term
-        results = api.search(searchStr)
+        results = self.shodanSession.search(searchStr)
 
         # Format the results into list
         print('Results found: %s' % results['total'])
@@ -47,12 +57,17 @@ class pyShodan:
         return hostinfo
 
     def searchIp(self, searchHost: str):
-        api = self.__api
+        if not self.shodanSession:
+            return 'Set API Key'
+
+        if not searchHost:
+            return 'No search input'
+
         hostinfo = []
 
         # Search Shodan for this IP address
         try:
-            host = api.host(searchHost)
+            host = self.shodanSession.host(searchHost)
 
             for item in host['data']:
                 hostinfo.append([item['ip_str'], item['org'], str(item['data'].replace(',',' ').strip('\t\n\r')), item['port']]) # Store the results in a list
@@ -62,15 +77,20 @@ class pyShodan:
 
         return hostinfo
 
-    def searchList(self, f: str):
-        api = self.__api
+    def searchList(self, inputFile: str):
+        if not self.shodanSession:
+            return 'Set API Key'
+
+        if not inputFile:
+            return 'No inout file'
+
         hostinfo = []
 
         # Iterate through lines in the file
-        for i in range(len(f.read().splitlines())):
+        for i in range(len(inputFile.read().splitlines())):
             try:
                 time.sleep(2)
-                host = api.host(x[i]) # Search Shodan for the host on the current line in the file
+                host = self.shodanSession.host(x[i]) # Search Shodan for the host on the current line in the file
                 for item in host['data']:
                     hostinfo.append([item['ip_str'], item['org'], str(item['data']).replace(',',' ').strip('\r\n\t'), item['port']]) # Store the results in a list
             except shodan.APIError as e:
