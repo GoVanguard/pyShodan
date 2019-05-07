@@ -38,26 +38,30 @@ class PyShodan:
         else:
             return 'Set API Key'
 
-    def searchTerm(self, searchStr: str):
+    def searchTerm(self, searchStr: str, allData = False):
         if not self.shodanSession:
             return 'Set API Key'
 
         if not searchHost:
             return 'No search input'
 
-        hostinfo = []
+        hostResult = []
 
         # Search Shodan for this term
-        results = self.shodanSession.search(searchStr)
+        apiResult = self.shodanSession.search(searchStr)
 
         # Format the results into list
         print('Results found: %s' % results['total'])
-        for result in results['matches']:
-            hostinfo.append([result['ip_str'].replace(","," "), result['data'].replace(","," ").encode("utf-8"),result['port']]) # Store the results in a list
 
-        return hostinfo
+        if allData == True:
+            hostResult = apiResult['matches']
+        else:
+            for result in apiResult['matches']:
+                hostResult.append([result['ip_str'].replace(","," "), result['data'].replace(","," ").encode("utf-8"),result['port']]) # Store the results in a list
 
-    def searchIp(self, searchHost: str):
+        return hostResult
+
+    def searchIp(self, searchHost: str, allData = False):
         if not self.shodanSession:
             return 'Set API Key'
 
@@ -69,19 +73,22 @@ class PyShodan:
         if searchHostIpType != "PUBLIC":
             return "Warning, {0} isn't public.. Shodan only tracks public IPs".format(searchHost)
 
-        hostinfo = []
+        hostResult = []
 
         # Search Shodan for this IP address
         try:
-            host = self.shodanSession.host(searchHost)
+            apiResult = self.shodanSession.host(searchHost)
 
-            for item in host['data']:
-                hostinfo.append([item['ip_str'], item['org'], str(item['data'].replace(',',' ').strip('\t\n\r')), item['port']]) # Store the results in a list
+            if allData == True:
+                hostResult = apiResult
+            else:
+                for item in apiResult['data']:
+                    hostResult.append([item['ip_str'], item['org'], str(item['data'].replace(',',' ').strip('\t\n\r')), item['port']]) # Store the results in a list
 
         except shodan.APIError as e:
             print("Error: %s" % e)
 
-        return hostinfo
+        return hostResult
 
     def searchList(self, inputFile: str):
         if not self.shodanSession:
