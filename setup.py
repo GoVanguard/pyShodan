@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pyShodan",
-    version="0.2.2",
+    version="0.2.3",
     author="Shane Scott",
     author_email="sscott@gvit.com",
     description="Python library for querying the Shodan API",
@@ -13,6 +13,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/GoVanguard/pyShodan",
     packages=['pyShodan'],
+    install_requires=["shodan", "IPy"],
     classifiers=(
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
