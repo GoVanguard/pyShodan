@@ -18,7 +18,7 @@
 #     along with pyShodan.  If not, see <http://www.gnu.org/licenses/>.             #
 #####################################################################################
 
-from pyShodan import pyShodan
+from pyShodan import PyShodan
 import sys
 import argparse
 import csv
@@ -41,7 +41,9 @@ def writeFile(t, h):
 def searchTerm(s):
     searchStr = s
     api = getApiKey(args.apiKey)
-    ps = pyShodan(api, False)
+    ps = PyShodan()
+    ps.apiKey = api
+    ps.createSession()
     hostinfo = ps.searchTerm(searchStr)
     title = "shodanOutput-" + searchStr + ".csv"
     writeFile(title, hostinfo)
@@ -49,7 +51,9 @@ def searchTerm(s):
 def searchIp(d):
     searchHost = d
     api = getApiKey(args.apiKey)
-    ps = pyShodan(api, False)
+    ps = PyShodan()
+    ps.apiKey = api
+    ps.createSession()
     try:
         hostinfo = ps.searchIp(searchHost)
         title = "shodanOutput-" + searchHost + ".csv"
@@ -59,7 +63,9 @@ def searchIp(d):
 
 def searchList(f):
     api = getApiKey(args.apiKey)
-    ps = pyShodan(api, False)
+    ps = PyShodan()
+    ps.apiKey = api
+    ps.createSession()
     d = datetime.datetime.today()
     hostinfo = ps.searchList(f)
     title = "shodanOutput-ipList_" + d.strftime("%d-%m-%Y_%H-%M-%S") + ".csv"

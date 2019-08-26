@@ -95,20 +95,21 @@ class PyShodan:
             return 'Set API Key'
 
         if not inputFile:
-            return 'No inout file'
+            return 'No input file'
 
         hostinfo = []
-
+        print("Opening %s" % inputFile)
         # Iterate through lines in the file
-        for i in range(len(inputFile.read().splitlines())):
-            try:
-                time.sleep(2)
-                host = self.shodanSession.host(x[i]) # Search Shodan for the host on the current line in the file
-                for item in host['data']:
-                    hostinfo.append([item['ip_str'], item['org'], str(item['data']).replace(',',' ').strip('\r\n\t'), item['port']]) # Store the results in a list
-            except shodan.APIError as e:
-                print("Error: %s" % e)
-                if "no information available" in str(e).lower():
-                    print("No information is available for %s" % str(x[i]))
+        with open(inputFile, 'r+') as f:
+            for line in f.readlines():
+                try:
+                    time.sleep(2)
+                    host = self.shodanSession.host(line) # Search Shodan for the host on the current line in the file
+                    for item in host['data']:
+                        hostinfo.append([item['ip_str'], item['org'], str(item['data']).replace(',',' ').strip('\r\n\t'), item['port']]) # Store the results in a list
+                except shodan.APIError as e:
+                    print("Error: %s" % e)
+                    if "no information available" in str(e).lower():
+                        print("No information is available for %s" % str(line))
 
         return hostinfo
