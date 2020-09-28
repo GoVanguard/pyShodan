@@ -18,7 +18,7 @@
 #     along with pyShodan.  If not, see <http://www.gnu.org/licenses/>.             #
 #####################################################################################
 
-from pyShodan import pyShodan
+from pyShodan import PyShodan
 import sys
 import argparse
 import csv
