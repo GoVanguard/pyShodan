@@ -95,12 +95,14 @@ class PyShodan:
             return 'Set API Key'
 
         if not inputFile:
-            return 'No inout file'
+            return 'No input file'
 
         hostinfo = []
+        with open(inputFile,'r') as f:
+            x = f.read().splitlines()
 
         # Iterate through lines in the file
-        for i in range(len(inputFile.read().splitlines())):
+        for i in range(len(x)):
             try:
                 time.sleep(2)
                 host = self.shodanSession.host(x[i]) # Search Shodan for the host on the current line in the file
