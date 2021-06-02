@@ -18,13 +18,4 @@ Tested on Python 3.5+.
 ## Dependencies
 * Shodan (pip3 install shodan)
 
-## Usage
-Short Form        | Long Form      | Description
------------------ | -------------- |-------------
--h                | --help         | show this help message and exit
--s                | --search       | Search Shodan for a general term
--ip               | --ipaddr       | Search Shodan for a specific IP address
-n/a               | --iplist       | Search Shodan for every IP address in a txt file
--api              | --api          | Shodan API key (required)
-
 Output is printed to stdout as well as CSV files in the script directory.

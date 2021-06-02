@@ -1,11 +1,11 @@
 import setuptools
 
 with open("README.md", "r") as fh:
-    long_description = fh.read()
+    long_description = str(fh.read())
 
 setuptools.setup(
     name="pyShodan",
-    version="0.2.3",
+    version="0.2.4",
     author="Shane Scott",
     author_email="sscott@gvit.com",
     description="Python library for querying the Shodan API",
