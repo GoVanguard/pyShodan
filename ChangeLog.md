@@ -4,3 +4,5 @@
 - Last commit by sscottgvit: Merge branch 'master' of github.com:GoVanguard/pyShodan
 ## v0.2.9 - 2024-05-03
 - Last commit by sscottgvit: Merge branch 'master' of github.com:GoVanguard/pyShodan
+## v0.2.10 - 2024-05-03
+- Last commit by sscottgvit: Merge branch 'master' of github.com:GoVanguard/pyShodan
