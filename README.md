@@ -1,4 +1,4 @@
-pyShodan (https://govanguard.io)
+pyShodan (https://gotham-security.com)
 ==
 [![Build Status](https://travis-ci.com/GoVanguard/pyShodan.svg?branch=master)](https://travis-ci.com/GoVanguard/pyShodan)
 [![Known Vulnerabilities](https://snyk.io/test/github/GoVanguard/pyShodan/badge.svg?targetFile=requirements.txt)](https://snyk.io/test/github/GoVanguard/pyShodan?targetFile=requirements.txt)

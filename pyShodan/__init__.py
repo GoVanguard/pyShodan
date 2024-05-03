@@ -1,67 +1,42 @@
-#####################################################################################
-#                  pyShodan: Python API Wrapper for Shodan                          #
-#                       Copyright (c) 2019 GoVanguard                               #
-#####################################################################################
-# This file is part of pyShodan.                                                    #
-#                                                                                   #
-#     pyShodan is free software: you can redistribute it and/or modify              #
-#     it under the terms of the GNU Lesser General Public License as published by   #
-#     the Free Software Foundation, either version 3 of the License, or             #
-#     (at your option) any later version.                                           #
-#                                                                                   #
-#     pyShodan is distributed in the hope that it will be useful,                   #
-#     but WITHOUT ANY WARRANTY; without even the implied warranty of                #
-#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 #
-#     GNU Lesser General Public License for more details.                           #
-#                                                                                   #
-#     You should have received a copy of the GNU Lesser General Public License      #
-#     along with pyShodan.  If not, see <http://www.gnu.org/licenses/>.             #
-#####################################################################################
-
 import shodan
 import sys
 import time
 from IPy import IP
+from typing import List, Union, Tuple
+
 
 class PyShodan:
 
-    #Constructor
-    def __init__(self):
-        self.apiKey = None
-        self.debug = False
+    def __init__(self, apiKey: str = None, debug: bool = False):
+        self.apiKey = apiKey
+        self.debug = debug
         self.shodanSession = None
 
-    def createSession(self):
+    def createSession(self) -> Union[None, str]:
         if self.apiKey:
             self.shodanSession = shodan.Shodan(self.apiKey)
-            return
         else:
             return 'Set API Key'
 
-    def searchTerm(self, searchStr: str, allData = False):
+    def searchTerm(self, searchStr: str, allData: bool = False) -> Union[List[dict], str]:
         if not self.shodanSession:
             return 'Set API Key'
 
-        if not searchHost:
+        if not searchStr:
             return 'No search input'
 
-        hostResult = []
+        try:
+            apiResult = self.shodanSession.search(searchStr)
+            print(f'Results found: {apiResult["total"]}')
 
-        # Search Shodan for this term
-        apiResult = self.shodanSession.search(searchStr)
+            if allData:
+                return apiResult['matches']
+            else:
+                return [[result['ip_str'], result['data'], result['port']] for result in apiResult['matches']]
+        except shodan.APIError as e:
+            return f"Error: {e}"
 
-        # Format the results into list
-        print('Results found: %s' % results['total'])
-
-        if allData == True:
-            hostResult = apiResult['matches']
-        else:
-            for result in apiResult['matches']:
-                hostResult.append([result['ip_str'].replace(","," "), result['data'].replace(","," ").encode("utf-8"),result['port']]) # Store the results in a list
-
-        return hostResult
-
-    def searchIp(self, searchHost: str, allData = False):
+    def searchIp(self, searchHost: str, allData: bool = False) -> Union[List[dict], str]:
         if not self.shodanSession:
             return 'Set API Key'
 
@@ -71,46 +46,42 @@ class PyShodan:
         searchHostIpType = IP(searchHost).iptype()
 
         if searchHostIpType != "PUBLIC":
-            return "Warning, {0} isn't public.. Shodan only tracks public IPs".format(searchHost)
+            return f"Warning, {searchHost} isn't public. Shodan only tracks public IPs."
 
-        hostResult = []
-
-        # Search Shodan for this IP address
         try:
             apiResult = self.shodanSession.host(searchHost)
 
-            if allData == True:
-                hostResult = apiResult
+            if allData:
+                return apiResult
             else:
-                for item in apiResult['data']:
-                    hostResult.append([item['ip_str'], item['org'], str(item['data'].replace(',',' ').strip('\t\n\r')), item['port']]) # Store the results in a list
-
+                return [[item['ip_str'], item['org'], item['data'].replace(',', ' ').strip(), item['port']] for item in apiResult['data']]
         except shodan.APIError as e:
-            print("Error: %s" % e)
+            return f"Error: {e}"
 
-        return hostResult
-
-    def searchList(self, inputFile: str):
+    def searchList(self, inputFile: str) -> Union[List[dict], str]:
         if not self.shodanSession:
             return 'Set API Key'
 
         if not inputFile:
             return 'No input file'
 
-        hostinfo = []
-        with open(inputFile,'r') as f:
-            x = f.read().splitlines()
+        try:
+            with open(inputFile, 'r') as f:
+                ips = f.read().splitlines()
 
-        # Iterate through lines in the file
-        for i in range(len(x)):
-            try:
+            hostInfo = []
+            for ip in ips:
                 time.sleep(2)
-                host = self.shodanSession.host(x[i]) # Search Shodan for the host on the current line in the file
-                for item in host['data']:
-                    hostinfo.append([item['ip_str'], item['org'], str(item['data']).replace(',',' ').strip('\r\n\t'), item['port']]) # Store the results in a list
-            except shodan.APIError as e:
-                print("Error: %s" % e)
-                if "no information available" in str(e).lower():
-                    print("No information is available for %s" % str(x[i]))
+                try:
+                    host = self.shodanSession.host(ip)
+                    for item in host['data']:
+                        hostInfo.append([item['ip_str'], item['org'], item['data'].replace(',', ' ').strip(), item['port']])
+                except shodan.APIError as e:
+                    if "no information available" in str(e).lower():
+                        print(f"No information is available for {ip}")
+                    else:
+                        print(f"Error: {e}")
 
-        return hostinfo
+            return hostInfo
+        except Exception as e:
+            return f"Error while reading file: {e}"
