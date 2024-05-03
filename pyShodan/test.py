@@ -68,6 +68,6 @@ if __name__ == "__main__":
     elif args.ipList:
         searchList(args.ipList)
     elif args.apiKey:
-        getApiKey(apiKey)
+        getApiKey(args.apiKey)
     else:
         print("Invalid arguments, see -h for details. Example use: python pyShodan.py -s SearchTerm -ip IPAddress -api SHODAN-api-key")
