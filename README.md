@@ -1,6 +1,6 @@
 pyShodan (https://gotham-security.com)
 ==
-[![Build Status](https://travis-ci.com/GoVanguard/pyShodan.svg?branch=master)](https://travis-ci.com/GoVanguard/pyShodan)
+[![Python package](https://github.com/GoVanguard/pyShodan/actions/workflows/master.yml/badge.svg)](https://github.com/GoVanguard/pyShodan/actions/workflows/master.yml)
 [![Known Vulnerabilities](https://snyk.io/test/github/GoVanguard/pyShodan/badge.svg?targetFile=requirements.txt)](https://snyk.io/test/github/GoVanguard/pyShodan?targetFile=requirements.txt)
 [![Maintainability](https://api.codeclimate.com/v1/badges/6b69cfa99c674d04e7a9/maintainability)](https://codeclimate.com/github/GoVanguard/pyShodan/maintainability)
 
@@ -13,7 +13,7 @@ git clone https://github.com/GoVanguard/pyShodan.git
 ```
 
 ## Recommended Python Version
-Tested on Python 3.5+.
+Tested on Python 3.6+.
 
 ## Dependencies
 * Shodan (pip3 install shodan)
