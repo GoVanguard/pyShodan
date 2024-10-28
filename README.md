@@ -1,3 +1,9 @@
+## NOTICE
+
+The pyShodan repository is moving to https://github.com/Hackman238/pyShodan. All future releases, updates, etc will occur from there.
+
+##
+
 pyShodan (https://gotham-security.com)
 ==
 [![Python package](https://github.com/GoVanguard/pyShodan/actions/workflows/master.yml/badge.svg)](https://github.com/GoVanguard/pyShodan/actions/workflows/master.yml)
